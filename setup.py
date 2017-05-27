@@ -6,7 +6,7 @@
 #
 
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 
 setup(
@@ -17,7 +17,7 @@ setup(
     author_email='b@raicheff.com',
     url='https://github.com/raicheff/flask-bdea',
     install_requires=('flask', 'block-disposable-email'),
-    py_modules=('flask_keen',),
+    packages=find_packages(),
 )
 
 
