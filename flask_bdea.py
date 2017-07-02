@@ -57,6 +57,8 @@ class DisposableEmail(object):
         self.message = message
 
     def __call__(self, form, field):
+        if current_app.debug:
+            return
         domain = field.data.rsplit('@', 1)[-1]
         is_disposable = current_app.extensions['bdea'].get_domain_status(domain).is_disposable()
         if is_disposable:
