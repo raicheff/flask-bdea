@@ -6,6 +6,7 @@
 #
 
 
+import re
 import warnings
 
 from bdea.client import BDEAClient
@@ -15,6 +16,9 @@ try:
     from wtforms.validators import ValidationError
 except ImportError:
     pass
+
+
+domain_re = re.compile('^(\S+)@(\S+)')
 
 
 class BDEA(object):
@@ -45,7 +49,7 @@ class BDEA(object):
         return getattr(self.client, name)
 
 
-class DisposableEmail(object):
+class NonDisposableEmail(object):
     """
     Validates an email address.
 
@@ -57,10 +61,17 @@ class DisposableEmail(object):
         self.message = message
 
     def __call__(self, form, field):
+
         if current_app.debug:
             return
-        domain = field.data.rsplit('@', 1)[-1]
-        is_disposable = current_app.extensions['bdea'].get_domain_status(domain).is_disposable()
+
+        message = self.message or field.gettext('Unacceptable email address.')
+
+        match = domain_re.match(field.data.strip().lower())
+        if match is None:
+            raise ValidationError(message)
+
+        is_disposable = current_app.extensions['bdea'].get_domain_status(match.group(2)).is_disposable()
         if is_disposable:
             message = self.message
             if message is None:
