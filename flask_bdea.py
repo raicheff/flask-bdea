@@ -1,5 +1,5 @@
 #
-# Flask-Keen
+# Flask-BDEA
 #
 # Copyright (C) 2017 Boris Raicheff
 # All rights reserved
